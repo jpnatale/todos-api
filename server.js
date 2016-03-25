@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 var app = express()
 var PORT = process.env.PORT || 3000
 var todoNextId = 1
+var _ = require('underscore')
 
 var todos = []
 
@@ -18,37 +19,41 @@ app.get('/todos', function (req, res){
 })
 
 app.get('/todos/:id', function (req, res){
-	var todoId = req.params.id
-	var matchIdtodo
+	var todoId = parseInt(req.params.id, 10)
+	var matchedIdTodo = _.findWhere(todos, {id: todoId})
 
-	todos.forEach(function (todo) {
-		if (todo.id == todoId) {
-			matchIdtodo = todo
-		};
-	})
-
-	if (typeof matchIdtodo == 'undefined'){
+	if (typeof matchedIdTodo == 'undefined'){
 
 		res.status(404).send()
 	} else {
-		res.json(matchIdtodo)
+		res.json(matchedIdTodo)
 	}
 })
 
 // POST /todos/
 app.post('/todos', function (req, res){
-	var body = req.body
+	var body = _.pick(req.body,'description','completed')
+
+	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0 ){
+
+		return res.status(400).send();
+	}
+	body.description = body.description.trim()
+
 	body.id = todoNextId
 	todoNextId++
 	todos.push(body)
 
-
-	// console.log('description: ' + body.description)
-
 	res.json(body)
+})
 
-	console.log(todos)
+app.delete('/todos/:id', function (req, res){
+	var todoId = parseInt(req.params.id, 10)
+	var matchedIdTodo = _.findWhere(todos, {id: todoId})
+	
+	todos = _.without(todos,matchedIdTodo)
 
+	res.json(todos)
 
 })
 
