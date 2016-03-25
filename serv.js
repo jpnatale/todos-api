@@ -17,7 +17,6 @@ var todos = [{
 
 app.get('/', function (req, res){
 	res.send('Todo API Root')
-
 })
 
 // Get /todos
