@@ -20,7 +20,7 @@ app.get('/', function (req, res){
 
 })
 
-// Get /todosf
+// Get /todos
 app.get('/todos', function (req, res){
 	res.json(todos)
 })
