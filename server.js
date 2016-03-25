@@ -6,7 +6,7 @@ var todoNextId = 1
 var _ = require('underscore')
 
 var todos = []
-
+//comment
 app.use(bodyParser.json());
 
 app.get('/', function (req, res){
@@ -51,9 +51,13 @@ app.delete('/todos/:id', function (req, res){
 	var todoId = parseInt(req.params.id, 10)
 	var matchedIdTodo = _.findWhere(todos, {id: todoId})
 	
+	if (!matchedIdTodo){
+		res.status(404).json({"error": "no todo found with that id"})
+	} else {
 	todos = _.without(todos,matchedIdTodo)
 
 	res.json(todos)
+	}
 
 })
 
