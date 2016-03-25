@@ -25,7 +25,21 @@ app.get('/todos', function (req, res){
 })
 
 app.get('/todos/:id', function (req, res){
-	res.send('Asking for todo with id of ' + req.params.id)
+	var todoId = req.params.id
+	var matchIdtodo
+
+	todos.forEach(function (todo) {
+		if (todo.id == todoId) {
+			matchIdtodo = todo
+		};
+	})
+
+	if (typeof matchIdtodo == 'undefined'){
+
+		res.status(404).send()
+	} else {
+		res.send(matchIdtodo)
+	}
 })
 
 // GET /todos/id
