@@ -6,33 +6,50 @@ var todoNextId = 1
 var _ = require('underscore')
 
 var todos = []
-//comment
+
 app.use(bodyParser.json());
 
-app.get('/', function (req, res){
+app.get('/', function(req, res) {
 	res.send('Todo API Root')
 })
 
-// Get /todos
-app.get('/todos', function (req, res){
+app.get('/todos', function(req, res) {
 	var queryParams = req.query
 	var filteredTodos = todos
 
 	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
-		filteredTodos = _.where(filteredTodos, {completed:true})
+		filteredTodos = _.where(filteredTodos, {
+			completed: true
+		})
 	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-		filteredTodos = _.where(filteredTodos, {completed:false})
+		filteredTodos = _.where(filteredTodos, {
+			completed: false
+		})
 	}
+
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+		filteredTodos = _.filter(filteredTodos, function(todo) {
+			if (todo.description.toLowerCase.indexOf(queryParams.q.toLowerCase) > -1) {
+				return true
+			} else {
+				return false
+			}
+
+		})
+
+	};
 
 
 	res.json(filteredTodos)
 })
 
-app.get('/todos/:id', function (req, res){
+app.get('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
-	var matchedIdTodo = _.findWhere(todos, {id: todoId})
+	var matchedIdTodo = _.findWhere(todos, {
+		id: todoId
+	})
 
-	if (typeof matchedIdTodo == 'undefined'){
+	if (typeof matchedIdTodo == 'undefined') {
 
 		res.status(404).send()
 	} else {
@@ -41,10 +58,10 @@ app.get('/todos/:id', function (req, res){
 })
 
 // POST /todos/
-app.post('/todos', function (req, res){
-	var body = _.pick(req.body,'description','completed')
+app.post('/todos', function(req, res) {
+	var body = _.pick(req.body, 'description', 'completed')
 
-	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0 ){
+	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
 
 		return res.status(400).send();
 	}
@@ -57,26 +74,34 @@ app.post('/todos', function (req, res){
 	res.json(body)
 })
 
-app.delete('/todos/:id', function (req, res){
+app.delete('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
-	var matchedIdTodo = _.findWhere(todos, {id: todoId})
-	
-	if (!matchedIdTodo){
-		res.status(404).json({"error": "no todo found with that id"})
+	var matchedIdTodo = _.findWhere(todos, {
+		id: todoId
+	})
+
+	if (!matchedIdTodo) {
+		res.status(404).json({
+			"error": "no todo found with that id"
+		})
 	} else {
-	todos = _.without(todos,matchedIdTodo)
-	res.json(todos)
+		todos = _.without(todos, matchedIdTodo)
+		res.json(todos)
 	}
 })
 
-app.put('/todos/:id', function (req, res){
+app.put('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
-	var matchedIdTodo = _.findWhere(todos, {id: todoId})
+	var matchedIdTodo = _.findWhere(todos, {
+		id: todoId
+	})
 	var body = _.pick(req.body, 'description', 'completed')
 	var validAttributes = {}
 
-	if (!matchedIdTodo){
-		res.status(404).json({"error": "no todo found with that id"})
+	if (!matchedIdTodo) {
+		res.status(404).json({
+			"error": "no todo found with that id"
+		})
 	}
 
 	if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
@@ -97,8 +122,8 @@ app.put('/todos/:id', function (req, res){
 
 
 
-app.listen(PORT, function(){
+app.listen(PORT, function() {
 
-	console.log("Express server listening on port " + PORT +"!")
+	console.log("Express server listening on port " + PORT + "!")
 
 })
