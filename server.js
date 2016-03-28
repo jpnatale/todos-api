@@ -108,7 +108,7 @@ app.put('/todos/:id', function(req, res) {
 	_.extend(matchedIdTodo, validAttributes)
 	res.json(matchedIdTodo)
 })
-//test2
+
 db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
 		console.log("Express server listening on port " + PORT + "!")
