@@ -123,7 +123,7 @@ app.post('/users', function(req, res){
 	})
 })
 
-//post /users/login
+
 app.post('/users/login', function (req, res){
 	var body = _.pick(req.body, 'email', 'password')
 
