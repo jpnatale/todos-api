@@ -6,6 +6,8 @@ var todoNextId = 1
 var _ = require('underscore')
 var db = require('./db.js')
 var bcrypt = require('bcryptjs')
+var middleware = require('./middleware.js')(db)
+
 
 var todos = []
 
@@ -15,7 +17,7 @@ app.get('/', function(req, res) {
 	res.send('Joe\'s Todo API Root')
 })
 
-app.get('/todos', function(req, res) {
+app.get('/todos', middleware.requireAuthentication, function(req, res) {
 	var query = req.query
 	var where = {}
 
@@ -38,7 +40,7 @@ db.todo.findAll({where: where}).then(function (todos){
 })
 })
 
-app.get('/todos/:id', function(req, res) {
+app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
 
 	db.todo.findById(todoId).then(function (todo){
@@ -53,7 +55,7 @@ app.get('/todos/:id', function(req, res) {
 })
 
 
-app.post('/todos', function(req, res) {
+app.post('/todos', middleware.requireAuthentication, function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed')
 
 	db.todo.create(body).then(function(todo) {
@@ -64,7 +66,7 @@ app.post('/todos', function(req, res) {
 
 })
 
-app.delete('/todos/:id', function(req, res) {
+app.delete('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
 		db.todo.destroy({
 		where: {
@@ -83,7 +85,7 @@ app.delete('/todos/:id', function(req, res) {
 	})
 })
 
-app.put('/todos/:id', function(req, res) {
+app.put('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	var todoId = parseInt(req.params.id, 10)
 
 	var body = _.pick(req.body, 'description', 'completed')
