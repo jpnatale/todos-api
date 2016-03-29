@@ -127,7 +127,7 @@ app.post('/users', function(req, res){
 app.post('/users/login', function (req, res){
 	var body = _.pick(req.body, 'email', 'password')
 
-	db.user.authenticate(body)then(function(){
+	db.user.authenticate(body).then(function(){
 		res.json(user.toPublicJSON())
 	}, function () {
 		res.status(401).send()
