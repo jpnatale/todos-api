@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt')
 var _ = require('underscore')
 
 module.exports = function(sequelize, DataTypes) {
-	var user =  sequelize.define('user', {
+	var user = sequelize.define('user', {
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
